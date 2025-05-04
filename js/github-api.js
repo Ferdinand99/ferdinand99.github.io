@@ -5,21 +5,41 @@ document.addEventListener('DOMContentLoaded', () => {
     const username = 'ferdinand99';
     const repoContainer = document.getElementById('repo-container');
     const repoLoading = document.getElementById('repo-loading');
+    
+    console.log('GitHub API script loaded');
+    console.log('Repository container found:', repoContainer !== null);
+    console.log('Loading indicator found:', repoLoading !== null);
 
     // Fetch GitHub repositories
     async function fetchRepositories() {
         try {
-            const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=6`);
+            console.log(`Fetching repositories for user: ${username}`);
             
-            if (!response.ok) {
+            // Add a timestamp to avoid caching issues
+            const url = `https://api.github.com/users/${username}/repos?sort=updated&per_page=6&_=${Date.now()}`;
+            const response = await fetch(url, {
+                headers: {
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+            
+            console.log('API Response status:', response.status);
+            
+            if (response.status === 403) {
+                // Check for rate limiting
+                const rateLimitRemaining = response.headers.get('X-RateLimit-Remaining');
+                console.log('Rate limit remaining:', rateLimitRemaining);
+                throw new Error('GitHub API rate limit exceeded. Please try again later.');
+            } else if (!response.ok) {
                 throw new Error(`GitHub API error: ${response.status}`);
             }
             
             const repos = await response.json();
+            console.log('Repositories fetched:', repos.length);
             displayRepositories(repos);
         } catch (error) {
             console.error('Error fetching repositories:', error);
-            showError('Failed to load repositories. Please try again later.');
+            showError(`Failed to load repositories: ${error.message}`);
         } finally {
             if (repoLoading) {
                 repoLoading.style.display = 'none';
@@ -29,12 +49,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Display repositories in the UI
     function displayRepositories(repos) {
-        if (!repoContainer) return;
+        if (!repoContainer) {
+            console.error('Repository container element not found');
+            return;
+        }
+        
+        // Clear any existing content
+        repoContainer.innerHTML = '';
         
         if (repos.length === 0) {
+            console.log('No repositories found');
             repoContainer.innerHTML = '<p class="no-repos">No repositories found.</p>';
             return;
         }
+        
+        console.log('Displaying repositories...');
 
         repos.forEach(repo => {
             // Create repository card
