@@ -37,9 +37,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add active class to nav links on scroll
     const sections = document.querySelectorAll('section');
     const navItems = document.querySelectorAll('.nav-links a');
+    const header = document.querySelector('header');
 
     window.addEventListener('scroll', () => {
         let current = '';
+        
+        // Add shadow to header on scroll
+        if (window.scrollY > 50) {
+            header.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.1)';
+        } else {
+            header.style.boxShadow = 'none';
+        }
         
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
