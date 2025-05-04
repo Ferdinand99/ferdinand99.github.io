@@ -755,3 +755,50 @@ footer::before {
     font-size: 1.5rem;
   }
 }
+
+.tech-knowledge-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.tech-card {
+  background-color: var(--background-light);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 32px 28px 28px 28px;
+  flex: 1 1 260px;
+  max-width: 320px;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: var(--transition);
+  margin-bottom: 10px;
+}
+
+.tech-card:hover {
+  transform: translateY(-7px) scale(1.03);
+  box-shadow: var(--box-shadow-hover);
+}
+
+.tech-card-icon {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: 18px;
+}
+
+.tech-card h3 {
+  font-size: 1.25rem;
+  color: var(--dark-color);
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.tech-card p {
+  font-size: 1rem;
+  color: var(--secondary-color);
+  text-align: center;
+}
